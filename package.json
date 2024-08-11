@@ -1,0 +1,98 @@
+{
+  "name": "invoices",
+  "version": "1.0.21",
+  "description": "Supplier Invoice",
+  "repository": "<Add your repository here>",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@sap-cloud-sdk/connectivity": "^3.9.0",
+    "@sap-cloud-sdk/generator": "^3.16.0",
+    "@sap-cloud-sdk/http-client": "^3.16.0",
+    "@sap-cloud-sdk/resilience": "^3.9.0",
+    "@sap-cloud-sdk/util": "^3.16.0",
+    "@sap/cds": "^7.9.4",
+    "@sap/cds-hana": "^2",
+    "@sap/cds-mtxs": "^1.9",
+    "@sap/eslint-plugin-cds": "^3.0.3",
+    "@sap/ux-cds-odata-language-server-extension": "^1.12.0",
+    "@sap/xssec": "^3",
+    "axios": "^1.6.4",
+    "cds": "^0.2.0",
+    "dotenv": "^16.3.1",
+    "express": "^4",
+    "mbt": "^1.2.28",
+    "passport": "^0",
+    "querystring": "^0.2.1",
+    "@cap-js/hana": "^1"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^1",
+    "@sap/cds-dk": "^7",
+    "@sap/eslint-plugin-cds": "^3",
+    "@sap/ux-specification": "^1.120.1",
+    "@types/openui5": "^1.126.0",
+    "cds-plugin-ui5": "^0.6.13",
+    "rimraf": "^3.0.2"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "cds": "npm i @sap/cds",
+    "undeploy": "cf undeploy invoices --delete-services --delete-service-keys --delete-service-brokers",
+    "build": "rimraf resources mta_archives && mbt build --mtar archive",
+    "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+    "lock": "npm i --package-lock-only",
+    "clean": "rimraf \"**/*mta_archives\" \"**/*gen\" \"**/*resources\" \"**/*dist\" \"**/*node_modules\" \"**/*package-lock.json\"",
+    "watch-invoices": "cds watch --open invoices/webapp/index.html?sap-ui-xx-viewCache=false"
+  },
+  "cds": {
+    "fiori": {
+      "lean_draft": true,
+      "bypass_draft": true
+    },
+    "requires": {
+      "[development]": {
+        "kind": "sqlite",
+        "auth": "dummy",
+        "impl": "@cap-js/sqlite",
+        "credentials": {
+          "url": "memory"
+        }
+      },
+      "[production]": {
+        "db": "hana",
+        "auth": "xsuaa"
+      },
+      "[hybrid]": {
+        "db": "hana",
+        "auth": "dummy"
+      },
+      "CE_PURCHASEORDER_0001": {
+        "kind": "odata",
+        "csrf": true,
+        "csrfInBatch": true,
+        "model": "srv/external/CE_PURCHASEORDER_0001",
+        "credentials": {
+          "destination": "S4Public",
+          "path": "/sap/opu/odata4/sap/api_purchaseorder_2/srvd_a2x/sap/purchaseorder/0001"
+        }
+      },
+      "API_MATERIAL_DOCUMENT_SRV": {
+        "kind": "odata-v2",
+        "csrf": true,
+        "csrfInBatch": true,
+        "model": "srv/external/API_MATERIAL_DOCUMENT_SRV",
+        "credentials": {
+          "destination": "S4Public",
+          "path": "/sap/opu/odata/sap/API_MATERIAL_DOCUMENT_SRV"
+        }
+      }
+    }
+  },
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/invoices"
+  ]
+}
