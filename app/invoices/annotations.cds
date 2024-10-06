@@ -357,8 +357,10 @@ annotate service.Invoice with @(UI.HeaderFacets: [{
 }, ]);
 
 annotate service.Invoice @(UI.FieldGroup #AdminData: {Data: [
-    {Value: createdAt},
-    {Value: createdBy},
+    {Value: createdAt,
+        Label : '{i18n>CreatedAt}',},
+    {Value: createdBy,
+        Label : '{i18n>CreatedBy}',},
     {Value: modifiedAt},
     {Value: modifiedBy}
 ]}, );
@@ -438,7 +440,7 @@ annotate service.Invoice with @(
         Text         : 'Matched Invoices',
         SelectOptions: [ 
         {
-            PropertyName: statusFlag,
+            PropertyName: status,
             Ranges      : [{
                 Sign  : #I,
                 Option: #EQ,

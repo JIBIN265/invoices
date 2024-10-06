@@ -12,7 +12,7 @@
     "@sap-cloud-sdk/http-client": "^3.16.0",
     "@sap-cloud-sdk/resilience": "^3.9.0",
     "@sap-cloud-sdk/util": "^3.16.0",
-    "@sap/cds": "^7.9.4",
+    "@sap/cds": "^8.3.0",
     "@sap/cds-hana": "^2",
     "@sap/cds-mtxs": "^1.9",
     "@sap/eslint-plugin-cds": "^3.0.3",
@@ -37,13 +37,14 @@
   },
   "scripts": {
     "start": "cds-serve",
-    "cds": "npm i @sap/cds",
+    "cds": "npm install @sap/cds@latest",
     "undeploy": "cf undeploy invoices --delete-services --delete-service-keys --delete-service-brokers",
     "build": "rimraf resources mta_archives && mbt build --mtar archive",
     "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
     "lock": "npm i --package-lock-only",
     "clean": "rimraf \"**/*mta_archives\" \"**/*gen\" \"**/*resources\" \"**/*dist\" \"**/*node_modules\" \"**/*package-lock.json\"",
-    "watch-invoices": "cds watch --open invoices/webapp/index.html?sap-ui-xx-viewCache=false"
+    "watch-invoices": "cds watch --open invoices/webapp/index.html?sap-ui-xx-viewCache=false",
+    "all": "npm run clean && npm run cds && npm run build && npm run deploy"
   },
   "cds": {
     "fiori": {

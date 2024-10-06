@@ -14,14 +14,6 @@ using {
   sap.common.Criticality
 } from '../db/common.cds';
 
-//using {CE_PURCHASEORDER_0001 as external} from '../srv/external/CE_PURCHASEORDER_0001';
-
-// entity PurchaseOrder as
-//   projection on external.PurchaseOrder {
-//     key PurchaseOrder,
-//         CompanyCode
-//   };
-
 entity InvoiceEntity : cuid, managed, {
   @description: 'Product Group Association'
   documentId       : Integer;
