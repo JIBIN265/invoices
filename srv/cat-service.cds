@@ -55,6 +55,7 @@ service InvCatalogService @(requires: 'authenticated-user') {
 
 
     entity InvoiceItem              as projection on persistence.InvoiceEntity.to_InvoiceItem;
+    // entity Attachments              as projection on persistence.InvoiceEntity.attachments;
 
     entity A_MaterialDocumentHeader as
         projection on gr.A_MaterialDocumentHeader {

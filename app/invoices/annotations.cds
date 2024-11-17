@@ -1,6 +1,67 @@
 using InvCatalogService as service from '../../srv/cat-service';
 
-annotate service.Invoice with @odata.draft.enabled;
+annotate service.Invoice with @(
+    odata.draft.enabled,
+    UI.SelectionPresentationVariant #tableView : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : ![@UI.PresentationVariant],
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
+        Text : 'Table View',
+    },
+    Analytics.AggregatedProperty #documentId_countdistinct : {
+        $Type : 'Analytics.AggregatedPropertyType',
+        Name : 'documentId_countdistinct',
+        AggregatableProperty : documentId,
+        AggregationMethod : 'countdistinct',
+        ![@Common.Label] : 'documentId (Count Distinct Values)',
+    },
+    UI.Chart #chartView : {
+        $Type : 'UI.ChartDefinitionType',
+        ChartType : #Column,
+        Dimensions : [
+            companyCode,
+        ],
+        DynamicMeasures : [
+            '@Analytics.AggregatedProperty#documentId_countdistinct',
+        ],
+    },
+    UI.SelectionPresentationVariant #chartView : {
+        $Type : 'UI.SelectionPresentationVariantType',
+        PresentationVariant : {
+            $Type : 'UI.PresentationVariantType',
+            Visualizations : [
+                '@UI.Chart#chartView',
+            ],
+        },
+        SelectionVariant : {
+            $Type : 'UI.SelectionVariantType',
+            SelectOptions : [
+            ],
+        },
+        Text : 'Chart View',
+    },
+//     Analytics.AggregatedProperty #documentId_countdistinct : {
+//         $Type : 'Analytics.AggregatedPropertyType',
+//         Name : 'documentId_countdistinct',
+//         AggregatableProperty : documentId,
+//         AggregationMethod : 'countdistinct',
+//         ![@Common.Label] : 'documentId (Count Distinct Values)',
+//     },
+//     UI.Chart #alpChart : {
+//         $Type : 'UI.ChartDefinitionType',
+//         ChartType : #Column,
+//         Dimensions : [
+//             companyCode,
+//         ],
+//         DynamicMeasures : [
+//             '@Analytics.AggregatedProperty#documentId_countdistinct',
+//         ],
+//     },
+);
 
 annotate service.Invoice with @(UI.LineItem: {
     // #LineItemHighlight
@@ -11,7 +72,7 @@ annotate service.Invoice with @(UI.LineItem: {
             Action: 'InvCatalogService.doThreeWayMatch',
             Label : 'Check Three Way Match'
         },
-        {
+        {   
             $Type: 'UI.DataField',
             Label: 'Document ID',
             Value: documentId,
@@ -333,14 +394,10 @@ annotate service.Invoice with @(UI.HeaderInfo: {
     Title         : {
         $Type: 'UI.DataField',
         Value: supInvParty,
-    //Criticality              : statusColor.criticality,
-    //CriticalityRepresentation: #WithIcon,
     },
     Description   : {
         $Type: 'UI.DataField',
         Value: fiscalYear,
-    //Criticality              : statusColor.criticality,
-    // CriticalityRepresentation: #WithIcon,
     },
 });
 
@@ -397,17 +454,8 @@ annotate service.InvoiceItem @(UI.FieldGroup #AdminData: {Data: [
     {Value: modifiedBy}
 ]}, );
 
-//annotate service.Invoice @(Common: {SideEffects #statusChanged: {
-//  SourceProperties: [status],
-// TargetProperties: ['']
-//}});
 
 annotate service.Invoice with @(UI.PresentationVariant: {
-    // /RequestAtLeast     : [
-    //     'ID',
-    //     'pr_enabled',
-    //     'pdr_enabled'
-    // ],
     SortOrder: [ //Default sort order
     {
         Property  : documentId,
@@ -416,11 +464,6 @@ annotate service.Invoice with @(UI.PresentationVariant: {
     ID       : 'InvoicePresentationDefault',
     Text     : '{Invoice}',
     MaxItems : 30,
-// SelectionFields: [ID],
-// Visualizations     : ['@UI.LineItem#Simplified'],
-// ![@Common.Messages]: [
-
-//],
 });
 
 annotate service.Invoice @(Common.SemanticKey: [
@@ -461,6 +504,31 @@ annotate service.Invoice with @(
         }, ],
     },
 );
+
+
+annotate service.Invoice with @Aggregation.ApplySupported: {
+    Transformations       : [
+        'aggregate',
+        'topcount',
+        'bottomcount',
+        'identity',
+        'concat',
+        'groupby',
+        'filter',
+        'expand',
+        'search'
+    ],
+    Rollup                : #None,
+    PropertyRestrictions  : true,
+    GroupableProperties   : [
+        companyCode,
+        supInvParty,
+        postingDate,
+        createdBy,
+    ],
+    AggregatableProperties: [{Property: documentId, }],
+};
+
 annotate service.Invoice with {
     statusFlag  @title: 'Status'  @Common.Text: statusColor.value  @Common.TextArrangement: #TextOnly;
 };

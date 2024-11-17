@@ -25,7 +25,7 @@ class InvCatalogService extends cds.ApplicationService {
             if (req.target.name !== "InvCatalogService.Invoice.drafts") { return; }
             const { ID } = req.data;
             req.data.statusFlag = DRAFT_STATUS;
-           
+
             const documentId = new SequenceHelper({
                 db: db,
                 sequence: "ZSUPPLIER_DOCUMENT_ID",
@@ -36,6 +36,10 @@ class InvCatalogService extends cds.ApplicationService {
             let number = await documentId.getNextNumber();
             req.data.documentId = number.toString();;
 
+        });
+
+        this.before("SAVE", Invoice, async (req) => {
+          
         });
 
         this.on('doThreeWayMatch', 'Invoice', async req => {

@@ -1,18 +1,10 @@
-namespace zsupplier;
-
 using {
-  Country,
-  sap.common.CodeList as CodeList,
   cuid,
-  Language,
   managed,
-  Currency,
 } from '@sap/cds/common';
-using {
-  sap.common.Region,
-  sap.common.UnitOfMeasure,
-  sap.common.Criticality
-} from '../db/common.cds';
+using {Attachments} from '@cap-js/sdm';
+
+namespace zsupplier;
 
 entity InvoiceEntity : cuid, managed, {
   @description: 'Product Group Association'
@@ -31,7 +23,8 @@ entity InvoiceEntity : cuid, managed, {
   comments         : String(150);
   newInvoice       : String(10);
   to_InvoiceItem   : Composition of many InvoiceItemEntity;
-};
+  attachments      : Composition of many Attachments;
+}
 
 aspect InvoiceItemEntity : cuid, managed {
 

@@ -64,7 +64,8 @@
         "sap.ui.core": {},
         "sap.ushell": {},
         "sap.fe.templates": {},
-        "sap.f": {}
+        "sap.f": {},
+        "sap.fe.core": {}
       }
     },
     "contentDensities": {
@@ -120,12 +121,12 @@
           ]
         },
         {
-          "pattern": "Invoice({key})/to_InvoiceItem({key2}):?query:",
-          "name": "InvoiceItemObjectPage",
+          "name": "Invoice_attachmentsViewPdfPagePage",
+          "pattern": "Invoice({key})/attachments({attachmentsKey}):?query:",
           "target": [
             "InvoiceList",
             "InvoiceObjectPage",
-            "InvoiceItemObjectPage"
+            "Invoice_attachmentsViewPdfPagePage"
           ]
         }
       ],
@@ -155,26 +156,41 @@
                     "selectionMode": "Multi",
                     "personalization": {
                       "sort": true,
-                      "filter": true,
                       "column": true
-                    },
-                    "quickVariantSelection": {
-                      "paths": [
-                        {
-                          "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#SelectionVariantAll"
-                        },
-                        {
-                          "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#SelectionVariantActive"
-                        },
-                        {
-                          "annotationPath": "com.sap.vocabularies.UI.v1.SelectionVariant#SelectionVariantExpired"
-                        }
-                      ]
                     }
                   }
                 }
               },
-              "initialLoad": "Enabled"
+              "initialLoad": "Enabled",
+              "content": {
+                "header": {
+                  "actions": {
+                    "ExtractPdf": {
+                      "press": "invoices.ext.controller.ExtractPdf.ExtractPdf",
+                      "visible": true,
+                      "enabled": true,
+                      "text": "{i18n>extractPdf}"
+                    }
+                  }
+                }
+              },
+              "views": {
+                "paths": [
+                  {
+                    "primary": [
+                      {
+                        "annotationPath": "com.sap.vocabularies.UI.v1.Chart#chartView"
+                      }
+                    ],
+                    "secondary": [
+                      {
+                        "annotationPath": "com.sap.vocabularies.UI.v1.PresentationVariant"
+                      }
+                    ],
+                    "defaultPath": "both"
+                  }
+                ]
+              }
             }
           },
           "controlAggregation": "beginColumnPages",
@@ -189,9 +205,9 @@
               "editableHeaderContent": false,
               "contextPath": "/Invoice",
               "navigation": {
-                "to_InvoiceItem": {
+                "attachments": {
                   "detail": {
-                    "route": "InvoiceItemObjectPage"
+                    "route": "Invoice_attachmentsViewPdfPagePage"
                   }
                 }
               },
@@ -220,18 +236,18 @@
           "controlAggregation": "midColumnPages",
           "contextPattern": "/Invoice({key})"
         },
-        "InvoiceItemObjectPage": {
+        "Invoice_attachmentsViewPdfPagePage": {
           "type": "Component",
-          "id": "InvoiceItemObjectPage",
-          "name": "sap.fe.templates.ObjectPage",
+          "id": "Invoice_attachmentsViewPdfPagePage",
+          "name": "sap.fe.core.fpm",
+          "controlAggregation": "endColumnPages",
           "options": {
             "settings": {
-              "editableHeaderContent": false,
-              "contextPath": "/Invoice/to_InvoiceItem"
+              "viewName": "invoices.ext.view.ViewPdfPage",
+              "contextPath": "/Invoice/attachments"
             }
           },
-          "controlAggregation": "endColumnPages",
-          "contextPattern": "/Invoice({key})/to_InvoiceItem({key2})"
+          "contextPattern": "/Invoice({key})/attachments({attachmentsKey})"
         }
       }
     },
